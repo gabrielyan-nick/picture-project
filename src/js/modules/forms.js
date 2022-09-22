@@ -1,4 +1,4 @@
-// import checkNumInputs from "./checkNumInputs";
+'use strict';
 
 const forms = () => {
   const form = document.querySelectorAll("form"),
