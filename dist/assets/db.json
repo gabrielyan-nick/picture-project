@@ -1,6 +1,5 @@
 {
-    "styles": [
-        {
+    "styles": [{
             "src": "assets/img/styles-5.jpg",
             "title": "Пастелью",
             "link": "#pastel"
@@ -20,5 +19,27 @@
             "title": "Шарж",
             "link": "#sharj"
         }
-    ]
+    ],
+
+    "sizes": [{
+        "none": "0",
+        "40x50": "550",
+        "50x70": "1200",
+        "70x70": "1700",
+        "70x100": "2100"
+    }],
+    "materials": [{
+        "none": "0",
+        "fiber": "1",
+        "lion": "1.2",
+        "cotton": "1.5"
+    }],
+    "options": [{
+        "none": "0",
+        "gel": "500",
+        "express": "1000",
+        "delivery": "700"
+    }]
+
+
 }

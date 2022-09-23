@@ -1,4 +1,5 @@
-'use strict';
+"use strict";
+import { postData } from "../services/reqests";
 
 const forms = () => {
   const form = document.querySelectorAll("form"),
@@ -20,14 +21,6 @@ const forms = () => {
     question: "assets/question.php",
   };
 
-  const postData = async (url, data) => {
-    let res = await fetch(url, {
-      method: "POST",
-      body: data,
-    });
-    return await res.text();
-  };
-
   const clearForm = () => {
     inputs.forEach((item) => {
       item.value = "";
@@ -36,7 +29,8 @@ const forms = () => {
       item.value = "";
     });
 
-    document.querySelectorAll(".file_upload div").forEach((item) => {   // Восстанавливаем кнопку загрузки фото.
+    document.querySelectorAll(".file_upload div").forEach((item) => {
+      // Восстанавливаем кнопку загрузки фото.
       item.style.display = "block";
     });
 
@@ -48,25 +42,21 @@ const forms = () => {
 
   upload.forEach((item) => {
     // Блок загрузки фото.
-    item.addEventListener("input", () => {
+    item.addEventListener("input", (e) => {
       let dots;
-      const arr = item.files[0].name.split(".");   // Массив из имени файла. 
+      const target = e.target;
+      const arr = item.files[0].name.split("."); // Массив из имени файла.
 
-      arr[0].length > 20 ? (dots = "...") : (dots = ".");
-      const name =
-        arr[0].substring(0, 20) +
-        dots +
-        arr[1];
+      arr[0].length > 17 ? (dots = "...") : (dots = "."); // Сокращаем длинное имя.
+      const name = arr[0].substring(0, 17) + dots + arr[1];
 
-      document.querySelectorAll(".file_upload div").forEach((item) => {
-        item.style.display = "none";
-      });
+      const uploadBtns = document.querySelectorAll(".file_upload button"),
+        uploadTextBoxes = document.querySelectorAll(".file_upload div");
 
-      document.querySelectorAll(".file_upload button").forEach((item) => {
-        item.style.width = "100%";
-        item.classList.add("animated", "toWide");
-        item.textContent = name;
-      });
+      uploadBtns[target.getAttribute("id")].style.width = "100%";
+      uploadBtns[target.getAttribute("id")].classList.add("animated", "toWide");
+      uploadBtns[target.getAttribute("id")].textContent = name;
+      uploadTextBoxes[target.getAttribute("id")].style.display = "none";
 
       document.addEventListener("click", () => {
         // Убираем анимацию кнопки.
@@ -102,6 +92,10 @@ const forms = () => {
       // const json = JSON.stringify(Object.fromEntries(formData.entries()));
       let api; // Cервер для отправки данных.
 
+      let price = document.querySelector(".calc-price").textContent;
+
+      formData.append("price", price);
+
       item.closest(".popup-design") || item.classList.contains("calc-form")
         ? (api = path.designer)
         : (api = path.question);
@@ -112,6 +106,9 @@ const forms = () => {
           console.log(data);
           statusImg.setAttribute("src", message.ok);
           textMessage.textContent = message.success;
+          if (item.classList.contains('calc-form')) {
+            document.querySelector(".calc-price").textContent = 'Для расчета нужно выбрать размер картины и материал картины';
+          }
         })
         .catch((data) => {
           console.log(data);
@@ -125,6 +122,7 @@ const forms = () => {
             item.classList.remove("fadeOutUp");
             item.classList.add("fadeInUp");
             item.style.display = "block";
+            
           }, 4000);
         });
     });
