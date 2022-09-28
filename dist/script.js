@@ -4513,12 +4513,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_accordeon__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/accordeon */ "./src/js/modules/accordeon.js");
 /* harmony import */ var _modules_burger__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./modules/burger */ "./src/js/modules/burger.js");
 /* harmony import */ var _modules_scroll__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./modules/scroll */ "./src/js/modules/scroll.js");
+/* harmony import */ var _modules_d_d__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./modules/d&d */ "./src/js/modules/d&d.js");
 
 
 
 
 
  // import calc from './modules/calc';
+
 
 
 
@@ -4544,6 +4546,7 @@ window.addEventListener('DOMContentLoaded', function () {
   Object(_modules_accordeon__WEBPACK_IMPORTED_MODULE_9__["default"])(".accordion-heading");
   Object(_modules_burger__WEBPACK_IMPORTED_MODULE_10__["default"])('.burger-menu', '.burger');
   Object(_modules_scroll__WEBPACK_IMPORTED_MODULE_11__["default"])('.pageup');
+  Object(_modules_d_d__WEBPACK_IMPORTED_MODULE_12__["default"])();
 });
 
 /***/ }),
@@ -4817,15 +4820,78 @@ var checkTextInputs = function checkTextInputs(selector) {
 
 /***/ }),
 
-/***/ "./src/js/modules/forms.js":
-/*!*********************************!*\
-  !*** ./src/js/modules/forms.js ***!
-  \*********************************/
+/***/ "./src/js/modules/d&d.js":
+/*!*******************************!*\
+  !*** ./src/js/modules/d&d.js ***!
+  \*******************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _forms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./forms */ "./src/js/modules/forms.js");
+
+
+
+var drop = function drop() {
+  var fileInputs = document.querySelectorAll('[name="upload"]');
+  ["dragenter", "dragleave", "dragover", "drop"].forEach(function (event) {
+    fileInputs.forEach(function (item) {
+      item.addEventListener(event, preventDefaults);
+    });
+  });
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  function highlight(item) {
+    item.closest(".file_upload").style.backgroundColor = "rgba(248, 121, 220, 0.493)";
+  }
+
+  function unHighlight(item) {
+    item.closest(".file_upload").style.backgroundColor = "";
+  }
+
+  ["dragenter", "dragover"].forEach(function (event) {
+    fileInputs.forEach(function (item) {
+      item.addEventListener(event, function () {
+        return highlight(item);
+      });
+    });
+  });
+  ["dragleave", "drop"].forEach(function (event) {
+    fileInputs.forEach(function (item) {
+      item.addEventListener(event, function () {
+        return unHighlight(item);
+      });
+    });
+  });
+  fileInputs.forEach(function (item) {
+    item.addEventListener("drop", function (e) {
+      item.files = e.dataTransfer.files;
+      Object(_forms__WEBPACK_IMPORTED_MODULE_1__["changeFileInputContent"])(e, item);
+    });
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (drop);
+
+/***/ }),
+
+/***/ "./src/js/modules/forms.js":
+/*!*********************************!*\
+  !*** ./src/js/modules/forms.js ***!
+  \*********************************/
+/*! exports provided: default, changeFileInputContent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "changeFileInputContent", function() { return changeFileInputContent; });
 /* harmony import */ var core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.function.name */ "./node_modules/core-js/modules/es.function.name.js");
 /* harmony import */ var core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.object.to-string */ "./node_modules/core-js/modules/es.object.to-string.js");
@@ -4848,6 +4914,28 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+function changeFileInputContent(e, item) {
+  var dots;
+  var target = e.target;
+  var arr = item.files[0].name.split("."); // Массив из имени файла.
+
+  arr[0].length > 17 ? dots = "..." : dots = "."; // Сокращаем длинное имя.
+
+  var name = arr[0].substring(0, 17) + dots + arr[1];
+  var uploadBtns = document.querySelectorAll(".file_upload button"),
+      uploadTextBoxes = document.querySelectorAll(".file_upload div");
+  uploadBtns[target.getAttribute("id")].style.width = "100%";
+  uploadBtns[target.getAttribute("id")].classList.add("animated", "toWide");
+  uploadBtns[target.getAttribute("id")].textContent = name;
+  uploadTextBoxes[target.getAttribute("id")].style.display = "none";
+  document.addEventListener("click", function () {
+    // Убираем анимацию кнопки.
+    document.querySelectorAll(".file_upload button").forEach(function (item) {
+      item.classList.remove("toWide");
+    });
+  });
+}
 
 var forms = function forms() {
   var form = document.querySelectorAll("form"),
@@ -4887,25 +4975,7 @@ var forms = function forms() {
   upload.forEach(function (item) {
     // Блок загрузки фото.
     item.addEventListener("input", function (e) {
-      var dots;
-      var target = e.target;
-      var arr = item.files[0].name.split("."); // Массив из имени файла.
-
-      arr[0].length > 17 ? dots = "..." : dots = "."; // Сокращаем длинное имя.
-
-      var name = arr[0].substring(0, 17) + dots + arr[1];
-      var uploadBtns = document.querySelectorAll(".file_upload button"),
-          uploadTextBoxes = document.querySelectorAll(".file_upload div");
-      uploadBtns[target.getAttribute("id")].style.width = "100%";
-      uploadBtns[target.getAttribute("id")].classList.add("animated", "toWide");
-      uploadBtns[target.getAttribute("id")].textContent = name;
-      uploadTextBoxes[target.getAttribute("id")].style.display = "none";
-      document.addEventListener("click", function () {
-        // Убираем анимацию кнопки.
-        document.querySelectorAll(".file_upload button").forEach(function (item) {
-          item.classList.remove("toWide");
-        });
-      });
+      return changeFileInputContent(e, item);
     });
   });
   form.forEach(function (item) {
@@ -4938,8 +5008,8 @@ var forms = function forms() {
         statusImg.setAttribute("src", message.ok);
         textMessage.textContent = message.success;
 
-        if (item.classList.contains('calc-form')) {
-          document.querySelector(".calc-price").textContent = 'Для расчета нужно выбрать размер картины и материал картины';
+        if (item.classList.contains("calc-form")) {
+          document.querySelector(".calc-price").textContent = "Для расчета нужно выбрать размер картины и материал картины";
         }
       }).catch(function (data) {
         console.log(data);
@@ -4959,6 +5029,7 @@ var forms = function forms() {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (forms);
+
 
 /***/ }),
 

@@ -11,6 +11,7 @@ import pictureSize from './modules/pictureSize';
 import accordeon from "./modules/accordeon";
 import burger from './modules/burger';
 import scroll from './modules/scroll';
+import drop from './modules/d&d';
 
 window.addEventListener('DOMContentLoaded', () => {
 'use strict';
@@ -30,4 +31,5 @@ pictureSize('.sizes-block');
 accordeon(".accordion-heading");
 burger('.burger-menu', '.burger');
 scroll('.pageup');
+drop();
 });
