@@ -38,20 +38,20 @@ const drop = () => {
 
   fileInputs.forEach((item, i) => {
     item.addEventListener("drop", (e) => {
-        item.files = e.dataTransfer.files;
-        changeFileInputContent(e, item);
+      item.files = e.dataTransfer.files;
+      changeFileInputContent(e, item);
     });
   });
 
-//   fileInputs[0].addEventListener('drop', (e) => {
-//     fileInputs[0].files = e.dataTransfer.files;
-//     const inputData = new FormData();
-//     inputData.append('file', fileInputs[0].files[0]);
-//     console.log(inputData);
-//     // postData("assets/server.php", inputData)
-//     //     .then(res => console.log(res))
-//     //     .catch(res => console.log(res));
-//   });
+  ["drop", "input"].forEach((event) => {  //  Мгновенная отправка фото на сервер.
+    fileInputs[0].addEventListener(event, (e) => {
+      const inputData = new FormData();
+      inputData.append("file", fileInputs[0].files[0]);
+      postData("assets/server.php", inputData)
+        .then((res) => console.log(res))
+        .catch((res) => console.log(res));
+    });
+  });
 };
 
 export default drop;
