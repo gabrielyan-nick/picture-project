@@ -4831,7 +4831,9 @@ var checkTextInputs = function checkTextInputs(selector) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
 /* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _forms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./forms */ "./src/js/modules/forms.js");
+/* harmony import */ var _services_reqests__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/reqests */ "./src/js/services/reqests.js");
+/* harmony import */ var _forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./forms */ "./src/js/modules/forms.js");
+
 
 
 
@@ -4870,10 +4872,22 @@ var drop = function drop() {
       });
     });
   });
-  fileInputs.forEach(function (item) {
+  fileInputs.forEach(function (item, i) {
     item.addEventListener("drop", function (e) {
       item.files = e.dataTransfer.files;
-      Object(_forms__WEBPACK_IMPORTED_MODULE_1__["changeFileInputContent"])(e, item);
+      Object(_forms__WEBPACK_IMPORTED_MODULE_2__["changeFileInputContent"])(e, item);
+    });
+  });
+  ["drop", "input"].forEach(function (event) {
+    //  Мгновенная отправка фото на сервер.
+    fileInputs[0].addEventListener(event, function (e) {
+      var inputData = new FormData();
+      inputData.append("file", fileInputs[0].files[0]);
+      Object(_services_reqests__WEBPACK_IMPORTED_MODULE_1__["postData"])("assets/server.php", inputData).then(function (res) {
+        return console.log(res);
+      }).catch(function (res) {
+        return console.log(res);
+      });
     });
   });
 };
