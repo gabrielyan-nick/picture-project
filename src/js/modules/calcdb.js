@@ -29,7 +29,7 @@ const calcdb = () => {
   };
 
   sizeBlock.addEventListener("change", () => {
-    getData("http://localhost:3000/sizes")
+    getData("https://json-server-abjv.onrender.com/sizes")
       .then((res) => {
         calcFunc();
         switch (sizeBlock.value) {
@@ -61,7 +61,7 @@ const calcdb = () => {
   });
 
   materialBlock.addEventListener("change", () => {
-    getData("http://localhost:3000/materials")
+    getData("https://json-server-abjv.onrender.com/materials")
       .then((res) => {
         calcFunc();
         switch (materialBlock.value) {
@@ -89,7 +89,7 @@ const calcdb = () => {
   });
 
   optionsBlock.addEventListener("change", () => {
-    getData("http://localhost:3000/options")
+    getData("https://json-server-abjv.onrender.com/options")
       .then((res) => {
         calcFunc();
         switch (optionsBlock.value) {
